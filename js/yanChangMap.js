@@ -135,7 +135,7 @@ class yanChangMap {
     this.centerX = this.canvas.width / 2;
     this.centerY = this.canvas.height / 2;
 
-    this.setLineType(lineType)
+    this.setLineType(lineType);
 
     // 变换画布原点移动到中心点
     this.ctx.translate(this.centerX, this.centerY);
@@ -151,11 +151,11 @@ class yanChangMap {
   }
 
   getLineType() {
-    return this.lineType
+    return this.lineType;
   }
 
   setLineType(lineType) {
-    this.lineType = lineType
+    this.lineType = lineType;
     if (lineType === "Line") {
       this.drawLine = this.drawLineFn;
     } else if (lineType === "Arrow") {
@@ -203,7 +203,7 @@ class yanChangMap {
   }
   // 增加线条
   addLine() {
-    this.actineLineIndex += 1;
+    this.actineLineIndex = this.lineList.length;
     if (!this.lineList[this.actineLineIndex]) {
       this.lineList.push({
         list: [],
@@ -463,5 +463,15 @@ class yanChangMap {
     );
     this.ctx.closePath();
     this.ctx.fill();
+  }
+
+  downloadCanvasImage(filename) {
+    var dataURL = this.canvas.toDataURL();
+    var downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = dataURL;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   }
 }

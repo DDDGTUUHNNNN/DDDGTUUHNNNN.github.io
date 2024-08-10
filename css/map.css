@@ -71,3 +71,54 @@ canvas {
 #lineInfo .active {
 	background-color: #bec8ff3a;
 }
+
+#lineInfo span {
+	outline: unset;
+	min-width: 50px;
+}
+
+.txtCenter {
+	margin-top: 12px;
+	position: sticky;
+	bottom: 0;
+}
+
+.addIcon {
+	width: 36px;
+	height: 36px;
+	border-radius: 18px;
+	background-color: #405DE6;
+	margin: auto;
+	line-height: 30px;
+	text-align: center;
+	box-shadow: 0 0px 3px 4px rgba(64, 93, 230, 0.6);
+}
+
+.addIcon span {
+	color: #ffffff;
+}
+
+
+
+.gu-mirror {
+	position: fixed !important;
+	margin: 0 !important;
+	z-index: 9999 !important;
+	opacity: 0.8;
+	font-size: 18px;
+}
+
+.gu-hide {
+	display: none !important;
+}
+
+.gu-unselectable {
+	-webkit-user-select: none !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	user-select: none !important;
+}
+
+.gu-transit {
+	opacity: 0.2;
+}
