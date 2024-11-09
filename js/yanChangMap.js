@@ -1,9 +1,9 @@
 class yanChangMap {
-  // 画布
+  // 定义画布
   canvas;
-  // ctx
+  // 定义画布上下文环境
   ctx;
-  // 渲染点数组
+  // 渲染点类型数组
   typeList = [
     "com",
     "fortress",
@@ -14,7 +14,7 @@ class yanChangMap {
     "core",
   ];
 
-  //   初始俱乐部信息
+  // 初始化社团信息列表
   clubInfoList = [
     { name: "俱乐部1", rel: "1" },
     { name: "俱乐部2", rel: "1" },
@@ -39,17 +39,17 @@ class yanChangMap {
   ];
   // 当前绘制线数组下标
   actineLineIndex = 0;
-  // 绘制线数组 [{list:[{x:0,y:0},{x:1,y:1}],color:red}]
+  // 绘制线数组，包含点列表和颜色
   lineList = [];
   // 偏移值
   offsetPageX = 0;
   offsetPageY = 0;
   // 初始缩放比例
   scaleFactor = 1.0;
-  //中心点坐标
+  // 中心点坐标
   centerX;
   centerY;
-  //
+  // 各种形状的集合
   shapes = {
     // 大本营
     baseCamp: [],
@@ -70,11 +70,12 @@ class yanChangMap {
   sideLength = 25;
   // 边数
   numSides = 6;
-  //
+  // 绘制线条函数（未初始化）
   drawLine = () => console.log("set drawLine ");
-  //
+  // 素材图片
   materialImg = null;
 
+  // 素材类型文档对象，包含素材各种属性
   materiaTypeDoc = {
     com: undefined,
     fortress: {
@@ -128,17 +129,11 @@ class yanChangMap {
   };
 
   constructor(canvas, lineType = "Line", materialImg = null) {
+    // 初始化，设置画布等属性
     this.setCanvas(canvas);
-    this.ctx = this.canvas.getContext("2d");
-    this.canvas.width = document.body.clientWidth;
-    this.canvas.height = document.body.clientHeight;
-    this.centerX = this.canvas.width / 2;
-    this.centerY = this.canvas.height / 2;
-
+    this.ctx = this.getCanvas().getContext("2d");
     this.setLineType(lineType);
-
-    // 变换画布原点移动到中心点
-    this.ctx.translate(this.centerX, this.centerY);
+    this.init();
     // 初始化线段
     this.actineLineIndex = 0;
     this.lineList = [
@@ -150,10 +145,22 @@ class yanChangMap {
     this.materialImg = materialImg;
   }
 
+  // 初始化函数
+  init() {
+    // 设置画布宽度高度与视窗大小一致，移动画布原点到中心
+    this.canvas.width = document.body.clientWidth;
+    this.canvas.height = document.body.clientHeight;
+    this.centerX = this.canvas.width / 2;
+    this.centerY = this.canvas.height / 2;
+    this.ctx.translate(this.centerX, this.centerY);
+  }
+
+  // 获取线条类型
   getLineType() {
     return this.lineType;
   }
 
+  // 设置线条类型，并更新绘制线条的函数
   setLineType(lineType) {
     this.lineType = lineType;
     if (lineType === "Line") {
@@ -163,45 +170,57 @@ class yanChangMap {
     }
   }
 
+  // 设置画布
   setCanvas(canvas) {
     this.canvas = canvas;
   }
+  // 获取画布
   getCanvas() {
     return this.canvas;
   }
 
+  // 设置形状集合
   setShapes(shapes) {
     this.shapes = shapes;
   }
+  // 获取形状集合
   getShapes() {
     return this.shapes;
   }
+
+  // 设置社团信息列表
   setClubInfoList(clubInfoList) {
     this.clubInfoList = clubInfoList;
   }
+  // 获取社团信息列表
   getClubInfoList() {
     return this.clubInfoList;
   }
 
+  // 设置当前绘制线数组下标
   setActineLineIndex(index) {
     this.actineLineIndex = index;
   }
 
+  // 获取当前绘制线数组下标
   getActineLineIndex() {
     return this.actineLineIndex;
   }
 
+  // 设置缩放比例
   setScaleFactor(scaleFactor) {
     this.scaleFactor = scaleFactor;
   }
+  // 获取缩放比例
   getScaleFactor() {
     return this.scaleFactor;
   }
 
+  // 获取绘制线数组
   getLineList() {
     return this.lineList;
   }
-  // 增加线条
+  // 增加线条到绘制线数组
   addLine() {
     this.actineLineIndex = this.lineList.length;
     if (!this.lineList[this.actineLineIndex]) {
@@ -212,7 +231,7 @@ class yanChangMap {
     }
   }
 
-  // 绘制六边形的函数
+  // 绘制六边形函数
   drawHexagon(vertexList, color) {
     this.ctx.fillStyle = color;
     this.ctx.beginPath();
@@ -227,7 +246,7 @@ class yanChangMap {
     this.ctx.fill();
   }
 
-  // 绘制直线
+  // 绘制直线函数
   drawLineFn(vertexList, color) {
     if (vertexList.length === 1) {
       this.ctx.fillStyle = color;
@@ -319,7 +338,7 @@ class yanChangMap {
     return `#${this.randomChannelTo16()}${this.randomChannelTo16()}${this.randomChannelTo16()}`;
   }
 
-  // 绘制
+  // 绘制所有图形和线条
   draw() {
     this.cleanDraw();
     this.typeList.map((type) => {
@@ -331,30 +350,49 @@ class yanChangMap {
           this.clubInfoList[shape.rank - 1]
         ) {
           const clubInfo = this.clubInfoList[shape.rank - 1];
-
+          let txtColor = "#00ff00";
+          let backColor = "rgba(0, 0, 0, 0.6)";
           if (clubInfo.rel === "0") {
             shape.color = "#00ff00";
           } else if (clubInfo.rel === "1") {
             shape.color = "#ff0000";
+            txtColor = "#ff0000";
           } else if (clubInfo.rel === "2") {
             shape.color = "#ff8888";
+            txtColor = "#ff8888";
           } else if (clubInfo.rel === "this") {
             shape.color = "#87ceeb";
           }
+
           this.drawHexagon(shape.vertexList, shape.color);
           this.drawPicture(shape);
-          const txt = clubInfo.name || shape.name;
-          this.ctx.fillStyle = "#000";
 
-          const fontSize = 12 / this.scaleFactor;
-
+          const fontSize = 18 / this.scaleFactor;
+          // 不提前设置字体会有长度对不上的bug
           this.ctx.font = `normal ${fontSize}px bold serif`;
 
-          this.ctx.fillText(
-            txt,
-            this.getConvertByAdd(shape.x - shape.offsetX, "offsetPageX"),
-            this.getConvertByAdd(shape.y + shape.offsetY, "offsetPageY")
+          const txt = clubInfo.name || shape.name;
+          const backHeight = 25 / this.scaleFactor;
+          const backWidth = this.ctx.measureText(txt).width + 10;
+
+          const heightDeviation = backHeight - 8 / this.scaleFactor;
+
+          const offsetPageX =
+            this.getConvertByAdd(shape.x, "offsetPageX") - backWidth / 2;
+
+          const offsetPageY = this.getConvertByAdd(shape.y + 40, "offsetPageY");
+
+          this.ctx.fillStyle = backColor; // 背景
+          this.ctx.fillRect(
+            offsetPageX - 5,
+            offsetPageY - heightDeviation,
+            backWidth,
+            backHeight
           );
+
+          this.ctx.fillStyle = txtColor;
+
+          this.ctx.fillText(txt, offsetPageX, offsetPageY);
         } else if (shape.type) {
           this.drawHexagon(shape.vertexList, shape.color);
           this.drawPicture(shape);
@@ -367,7 +405,7 @@ class yanChangMap {
       this.drawLine(line.list, line.color);
     });
   }
-  // 数值转换 相对 地图 放大和缩小
+  // 数值转换，相对地图放大和缩小
   getXConvert(num) {
     return this.getConvert(num, "centerX", "offsetPageX");
   }
@@ -398,10 +436,11 @@ class yanChangMap {
   getConvertByAdd(num, key) {
     return num / this.scaleFactor + this[key];
   }
-
+  
   drawArrow(startX, startY, endX, endY, arrowSize) {
     const dx = endX - startX;
     const dy = endY - startY;
+
     const angle = Math.atan2(dy, dx);
 
     this.ctx.beginPath();
@@ -409,69 +448,95 @@ class yanChangMap {
       this.getConvertByAdd(startX, "offsetPageX"),
       this.getConvertByAdd(startY, "offsetPageY")
     );
+
+    const tX = arrowSize * Math.cos(angle - Math.PI / 6);
+    const tY = arrowSize * Math.sin(angle - Math.PI / 6);
+    const dX = arrowSize * Math.cos(angle + Math.PI / 6);
+    const dY = arrowSize * Math.sin(angle + Math.PI / 6);
+
     this.ctx.lineTo(
-      this.getConvertByAdd(
-        endX - arrowSize * Math.cos(angle - Math.PI / 6),
-        "offsetPageX"
-      ),
-      this.getConvertByAdd(
-        endY - arrowSize * Math.sin(angle - Math.PI / 6),
-        "offsetPageY"
-      )
+      this.getConvertByAdd(endX - tX, "offsetPageX"),
+      this.getConvertByAdd(endY - tY, "offsetPageY")
     );
     this.ctx.lineTo(
-      this.getConvertByAdd(
-        endX - arrowSize * Math.cos(angle + Math.PI / 6),
-        "offsetPageX"
-      ),
-      this.getConvertByAdd(
-        endY - arrowSize * Math.sin(angle + Math.PI / 6),
-        "offsetPageY"
-      )
+      this.getConvertByAdd(endX - dX, "offsetPageX"),
+      this.getConvertByAdd(endY - dY, "offsetPageY")
     );
-    // this.ctx.lineTo(endX+5, endY+5);
+
     this.ctx.closePath();
     this.ctx.stroke();
     this.ctx.fill();
 
     this.ctx.beginPath();
-    // this.ctx.moveTo(endX, endY);
+
     this.ctx.moveTo(
       this.getConvertByAdd(endX, "offsetPageX"),
       this.getConvertByAdd(endY, "offsetPageY")
     );
     this.ctx.lineTo(
-      this.getConvertByAdd(
-        endX - arrowSize * 3 * Math.cos(angle - Math.PI / 6),
-        "offsetPageX"
-      ),
-      this.getConvertByAdd(
-        endY - arrowSize * 3 * Math.sin(angle - Math.PI / 6),
-        "offsetPageY"
-      )
+      this.getConvertByAdd(endX - tX * 3, "offsetPageX"),
+      this.getConvertByAdd(endY - tY * 3, "offsetPageY")
     );
-    // this.ctx.lineTo(endX, endY);
+
     this.ctx.lineTo(
-      this.getConvertByAdd(
-        endX - arrowSize * 3 * Math.cos(angle + Math.PI / 6),
-        "offsetPageX"
-      ),
-      this.getConvertByAdd(
-        endY - arrowSize * 3 * Math.sin(angle + Math.PI / 6),
-        "offsetPageY"
-      )
+      this.getConvertByAdd(endX - dX * 3, "offsetPageX"),
+      this.getConvertByAdd(endY - dY * 3, "offsetPageY")
     );
     this.ctx.closePath();
     this.ctx.fill();
   }
+  // dataURL转布尔
+  dataURLtoBlob(dataurl) {
+    var arr = dataurl.split(",");
+    var mime = arr[0].match(/:(.*?);/)[1];
+    var bstr = atob(arr[1]);
+    var n = bstr.length;
+    var u8arr = new Uint8Array(n);
 
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new Blob([u8arr], { type: mime });
+  }
+  // 画布生成图片到剪切板或者下载
   downloadCanvasImage(filename) {
-    var dataURL = this.canvas.toDataURL();
-    var downloadLink = document.createElement("a");
-    downloadLink.download = filename;
-    downloadLink.href = dataURL;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    const oldScaleFactor = this.scaleFactor;
+    const width = 4096;
+    const height = 3600;
+    document.querySelector("canvas").width = width;
+    document.querySelector("canvas").height = height;
+    this.ctx.translate(width / 2, height / 2);
+    this.scaleFactor = 0.45;
+    this.draw();
+    setTimeout(() => {
+      var dataURL = this.canvas.toDataURL();
+      if (navigator && navigator.clipboard) {
+        const png = new ClipboardItem({
+          "image/png": this.dataURLtoBlob(dataURL),
+        });
+        navigator.clipboard
+          .write([png])
+          .then(function () {
+            console.log("图片已被复制到剪切板");
+          })
+          .catch(function (error) {
+            console.error("复制失败", error);
+          });
+      } else {
+        var downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = dataURL;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      }
+
+      setTimeout(() => {
+        this.scaleFactor = oldScaleFactor;
+        this.init();
+        this.draw();
+      }, 0);
+    }, 0);
   }
 }
